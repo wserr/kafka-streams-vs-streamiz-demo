@@ -40,7 +40,7 @@ public class Worker : BackgroundService
                 )
         );
 
-	enrichedWeatherRecordStream.To<StringSerDes, JsonSerDes<EnrichedWeatherRecord>>("weather.data.enriched");
+	enrichedWeatherRecordStream.To<StringSerDes, JsonSerDes<EnrichedWeatherRecord>>("weather.data.enriched.streamiz");
 
 	var t = builder.Build();
 	var stream = new KafkaStream(t, config);

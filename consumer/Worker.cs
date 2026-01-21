@@ -5,12 +5,17 @@ namespace consumer;
 
 public class Worker : BackgroundService
 {
-    private static readonly Histogram MessageProcessingDuration = Metrics.CreateHistogram(
+    private static readonly Histogram MessageProcessingDurationStreams = Metrics.CreateHistogram(
+        "messageProcessingDuration",
+        "Histogram of message processing durations"
+    );
+    
+    private static readonly Histogram MessageProcessingDurationStreamiz = Metrics.CreateHistogram(
         "messageProcessingDuration",
         "Histogram of message processing durations"
     );
 
-    private IConsumer<string, EnrichedWeatherRecord> _enrichedWeatherDataConsumer;
+    private readonly IConsumer<string, EnrichedWeatherRecord> _enrichedWeatherDataConsumer;
 
     public Worker(ILogger<Worker> logger)
     {
@@ -24,7 +29,7 @@ public class Worker : BackgroundService
         )
             .SetValueDeserializer(new JsonDeserializer<EnrichedWeatherRecord>())
             .Build();
-        _enrichedWeatherDataConsumer.Subscribe("weather.data.enriched");
+        _enrichedWeatherDataConsumer.Subscribe(["weather.data.enriched.streams", "weather.data.enriched.streamiz"]);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -37,8 +42,7 @@ public class Worker : BackgroundService
 
     public Task Consume(CancellationToken stoppingToken)
     {
-        return Task.Run(
-            async () =>
+        return Task.Run(() =>
             {
                 try
                 {
@@ -47,9 +51,11 @@ public class Worker : BackgroundService
                         try
                         {
                             var cr = _enrichedWeatherDataConsumer.Consume();
+                            
+                            var histogramObserver = cr.Topic == "weather.data.enriched.streams" ? MessageProcessingDurationStreams : MessageProcessingDurationStreamiz;
 
 			    var result = cr.Message.Value.currentMessageTimestamp - cr.Message.Value.originalMessageTimestamp;
-			    MessageProcessingDuration.Observe(result);
+			    histogramObserver.Observe(result);
 
                             _enrichedWeatherDataConsumer.Commit();
                         }
@@ -64,6 +70,8 @@ public class Worker : BackgroundService
                     // Ensure the consumer leaves the group cleanly and final offsets are committed.
                     _enrichedWeatherDataConsumer.Close();
                 }
+
+                return Task.CompletedTask;
             },
             stoppingToken
         );

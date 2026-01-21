@@ -43,7 +43,6 @@ services:
       interval: 5s
       retries: 30
   redpanda-console:
-    container_name: redpanda-console
     image: redpandadata/console:latest
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
@@ -76,6 +75,14 @@ services:
         - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
         - DOTNET_VERSION=${DOTNET_VERSION}
       context: ./streamiz
+    depends_on:
+      broker-init:
+        condition: service_completed_successfully
+  streams:
+    deploy:
+      replicas: 3
+    build:
+      context: ./streams
     depends_on:
       broker-init:
         condition: service_completed_successfully

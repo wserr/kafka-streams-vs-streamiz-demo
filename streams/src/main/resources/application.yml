@@ -1,0 +1,23 @@
+spring:
+  kafka:
+    bootstrap-servers: broker:29092
+    streams:
+      application-id: Streams
+      auto.offset.reset: earliest
+      properties:
+        processing.guarantee: exactly_once_v2
+
+kafka:
+  enabled: true
+
+management:
+  server:
+    port: 9404
+    address: 0.0.0.0
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    prometheus:
+      enabled: true
