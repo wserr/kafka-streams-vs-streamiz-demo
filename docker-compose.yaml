@@ -1,0 +1,104 @@
+name: streamiz-vs-streams
+services:
+  broker-init:
+    image: confluentinc/cp-kafka:latest
+    command: ["/bin/bash", "-c", "/create_topics.sh"]
+    depends_on:
+      broker:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: ./create_topics.sh
+        target: /create_topics.sh
+  broker:
+    image: confluentinc/cp-kafka:latest
+    hostname: broker
+    ports:
+      - "9092:9092" # Broker port
+      - "9101:9101" # JMX endpoint port
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: "PLAINTEXT://broker:29092,CONTROLLER://broker:29093,PLAINTEXT_HOST://0.0.0.0:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0 # for KSQL
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      CLUSTER_ID: "hODikk7SQWSZtWOTdZmbyQ" # KRaft mode - generated with `/bin/kafka-storage random-uuid`
+      KAFKA_PROCESS_ROLES: "broker,controller" # KRaft mode
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@broker:29093" #KRaft mode
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+      KAFKA_LOG_DIRS: "/tmp/broker"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "kafka-topics --bootstrap-server broker:9092 --list || exit 1",
+        ]
+      timeout: 4s
+      interval: 5s
+      retries: 30
+  redpanda-console:
+    container_name: redpanda-console
+    image: redpandadata/console:latest
+    entrypoint: /bin/sh
+    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["broker:29092"]
+    ports:
+      - "8080:8080"
+    depends_on:
+      broker:
+        condition: service_healthy
+  weather-station:
+    deploy:
+      replicas: 10
+    build:
+      args:
+        - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+        - DOTNET_VERSION=${DOTNET_VERSION}
+      context: ./weather-station
+    depends_on:
+      broker-init:
+        condition: service_completed_successfully
+  streamiz:
+    deploy:
+      replicas: 3
+    build:
+      args:
+        - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+        - DOTNET_VERSION=${DOTNET_VERSION}
+      context: ./streamiz
+    depends_on:
+      broker-init:
+        condition: service_completed_successfully
+  consumer:
+    build:
+      args:
+        - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+        - DOTNET_VERSION=${DOTNET_VERSION}
+      context: ./consumer
+    depends_on:
+      broker-init:
+        condition: service_completed_successfully
+    ports:
+      - 1234:1234
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    command:
+        - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+        - ./prometheus/:/etc/prometheus/:ro
+    ports:
+      - 9090:9090
+  grafana:
+    image: grafana/grafana:10.2.2
+    ports:
+      - 3000:3000
