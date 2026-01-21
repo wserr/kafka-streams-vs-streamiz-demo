@@ -34,6 +34,7 @@ public class Worker : BackgroundService
             (weatherRecord, station) =>
                 new EnrichedWeatherRecord(
                     weatherRecord.messageId,
+                    station.weatherStationId,
                     weatherRecord.value,
                     weatherRecord.timeStamp,
                     DateTimeOffset.Now.ToUnixTimeMilliseconds()

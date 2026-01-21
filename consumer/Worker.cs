@@ -5,14 +5,14 @@ namespace consumer;
 
 public class Worker : BackgroundService
 {
-    private static readonly Histogram MessageProcessingDurationStreams = Metrics.CreateHistogram(
-        "messageProcessingDuration",
-        "Histogram of message processing durations"
-    );
-    
-    private static readonly Histogram MessageProcessingDurationStreamiz = Metrics.CreateHistogram(
-        "messageProcessingDuration",
-        "Histogram of message processing durations"
+    private static readonly Histogram MessageProcessingDuration = Metrics.CreateHistogram(
+        "message_processing_duration_seconds",
+        "Histogram of message processing durations in seconds",
+        new HistogramConfiguration
+        {
+            LabelNames = new[] { "processor_type" },
+            Buckets = new[] { 1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0 },
+        }
     );
 
     private readonly IConsumer<string, EnrichedWeatherRecord> _enrichedWeatherDataConsumer;
@@ -40,7 +40,7 @@ public class Worker : BackgroundService
         }
     }
 
-    public Task Consume(CancellationToken stoppingToken)
+    private Task Consume(CancellationToken stoppingToken)
     {
         return Task.Run(() =>
             {
@@ -52,10 +52,11 @@ public class Worker : BackgroundService
                         {
                             var cr = _enrichedWeatherDataConsumer.Consume();
                             
-                            var histogramObserver = cr.Topic == "weather.data.enriched.streams" ? MessageProcessingDurationStreams : MessageProcessingDurationStreamiz;
-
-			    var result = cr.Message.Value.currentMessageTimestamp - cr.Message.Value.originalMessageTimestamp;
-			    histogramObserver.Observe(result);
+                            var processorType = cr.Topic == "weather.data.enriched.streams" ? "streams" : "streamiz";
+                            
+                            var processingDurationMs = cr.Message.Value.currentMessageTimestamp - cr.Message.Value.originalMessageTimestamp;
+                            
+                            MessageProcessingDuration.WithLabels(processorType).Observe(processingDurationMs);
 
                             _enrichedWeatherDataConsumer.Commit();
                         }

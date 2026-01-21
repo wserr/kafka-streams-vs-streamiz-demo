@@ -1,3 +1,3 @@
 namespace streamiz;
 
-public record EnrichedWeatherRecord(Guid messageId, double value, long originalMessageTimestamp, long currentMessageTimestamp);
+public record EnrichedWeatherRecord(Guid messageId, string weatherStationId, double value, long originalMessageTimestamp, long currentMessageTimestamp);
