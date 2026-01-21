@@ -11,7 +11,7 @@ public class Worker : BackgroundService
         new HistogramConfiguration
         {
             LabelNames = new[] { "processor_type" },
-            Buckets = new[] { 1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0 },
+            Buckets = new[] { 1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0, 200.0, 300.0, 1000.0 },
         }
     );
 
