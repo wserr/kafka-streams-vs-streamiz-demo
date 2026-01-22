@@ -114,7 +114,7 @@
           "refId": "A"
         }
       ],
-      "title": "Amount of messages, processed within 50ms",
+      "title": "# of messages, processed within 50ms",
       "type": "timeseries"
     },
     {
@@ -209,7 +209,7 @@
           "refId": "A"
         }
       ],
-      "title": "Amount of messages, processed within 100ms",
+      "title": "# of messages, processed within 100ms",
       "type": "timeseries"
     },
     {
@@ -329,7 +329,7 @@
           "refId": "A"
         }
       ],
-      "title": "Total amount of messages processed",
+      "title": "Total amount of messages",
       "type": "timeseries"
     }
   ],
@@ -347,6 +347,6 @@
   "timezone": "",
   "title": "Processing Time",
   "uid": "a88eb3b7-2cf3-4737-bec7-ea1a85bcf23b",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
