@@ -95,8 +95,6 @@ services:
     depends_on:
       broker-init:
         condition: service_completed_successfully
-    ports:
-      - 1234:1234
   prometheus:
     image: prom/prometheus:v2.48.0
     command:
@@ -105,6 +103,14 @@ services:
         - ./prometheus/:/etc/prometheus/:ro
     ports:
       - 9090:9090
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    volumes:
+        - /:/rootfs:ro
+        - /var/run:/var/run:rw
+        - /sys:/sys:ro
+        - /var/lib/docker/:/var/lib/docker:ro
   grafana:
     image: grafana/grafana:10.2.2
     ports:

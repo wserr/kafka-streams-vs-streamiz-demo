@@ -6,12 +6,21 @@ namespace consumer;
 public class Worker : BackgroundService
 {
     private static readonly Histogram MessageProcessingDuration = Metrics.CreateHistogram(
-        "message_processing_duration_seconds",
-        "Histogram of message processing durations in seconds",
+        "message_processing_duration_milliseconds",
+        "Histogram of message processing durations in milliseconds",
         new HistogramConfiguration
         {
             LabelNames = new[] { "processor_type" },
-            Buckets = new[] { 1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0, 200.0, 300.0, 1000.0 },
+            Buckets = new[] { 1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0, 200.0, 300.0, 1000.0, 10000.0 },
+        }
+    );
+    private static readonly Histogram MessageReceptionDuration = Metrics.CreateHistogram(
+        "message_reception_milliseconds",
+        "Histogram of time between the message was created, and the resulting message was received by the consumer",
+        new HistogramConfiguration
+        {
+            LabelNames = new[] { "processor_type" },
+            Buckets = new[] { 1.0, 10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 100.0, 200.0, 300.0, 1000.0, 10000.0 },
         }
     );
 
@@ -55,10 +64,10 @@ public class Worker : BackgroundService
                             var processorType = cr.Topic == "weather.data.enriched.streams" ? "streams" : "streamiz";
                             
                             var processingDurationMs = cr.Message.Value.currentMessageTimestamp - cr.Message.Value.originalMessageTimestamp;
+                            var receptionDurationMs = DateTimeOffset.Now.ToUnixTimeMilliseconds() - cr.Message.Value.originalMessageTimestamp;
                             
                             MessageProcessingDuration.WithLabels(processorType).Observe(processingDurationMs);
-
-                            _enrichedWeatherDataConsumer.Commit();
+			    MessageReceptionDuration.WithLabels(processorType).Observe(receptionDurationMs);
                         }
                         catch (ConsumeException e)
                         {
