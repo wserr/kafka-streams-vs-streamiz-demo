@@ -1,4 +1,4 @@
-FROM maven:3.9.11-amazoncorretto-24-debian-trixie as BUILD
+FROM maven:3.9.15-amazoncorretto-25-debian-trixie as BUILD
 
 WORKDIR /app
 COPY ./pom.xml ./
@@ -6,7 +6,7 @@ COPY ./pom.xml ./
 RUN mvn dependency:resolve
 
 COPY ./ ./
-RUN mvn package -Dmaven.test.skip
+RUN mvn package -Dmaven.test.skip -Prelease
 
 FROM amazoncorretto:25 as RELEASE
 

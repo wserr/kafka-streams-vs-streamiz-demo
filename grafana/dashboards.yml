@@ -1,0 +1,30 @@
+apiVersion: 1
+
+providers:
+  - name: 'memory_usage'
+    orgId: 1
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path:  /var/lib/grafana/dashboards
+      foldersFromFilesStructure: true
+  - name: 'e2e_time'
+    orgId: 1
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path:  /var/lib/grafana/dashboards
+      foldersFromFilesStructure: true
+  - name: 'processing_time'
+    orgId: 1
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path:  /var/lib/grafana/dashboards
+      foldersFromFilesStructure: true
