@@ -67,9 +67,7 @@ services:
     depends_on:
       broker-init:
         condition: service_completed_successfully
-  streamiz:
-    deploy:
-      replicas: 3
+  streamiz-1:
     build:
       args:
         - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
@@ -78,9 +76,37 @@ services:
     depends_on:
       broker-init:
         condition: service_completed_successfully
-  streams:
-    deploy:
-      replicas: 3
+  streamiz-2:
+    build:
+      args:
+        - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+        - DOTNET_VERSION=${DOTNET_VERSION}
+      context: ./streamiz
+    depends_on:
+      broker-init:
+        condition: service_completed_successfully
+  streamiz-3:
+    build:
+      args:
+        - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+        - DOTNET_VERSION=${DOTNET_VERSION}
+      context: ./streamiz
+    depends_on:
+      broker-init:
+        condition: service_completed_successfully
+  streams-1:
+    build:
+      context: ./streams
+    depends_on:
+      broker-init:
+        condition: service_completed_successfully
+  streams-2:
+    build:
+      context: ./streams
+    depends_on:
+      broker-init:
+        condition: service_completed_successfully
+  streams-3:
     build:
       context: ./streams
     depends_on:
@@ -88,7 +114,7 @@ services:
         condition: service_completed_successfully
   consumer:
     deploy:
-      replicas: 3
+      replicas: 6
     build:
       args:
         - BUILD_CONFIGURATION=${BUILD_CONFIGURATION}

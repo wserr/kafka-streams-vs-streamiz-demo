@@ -1,12 +1,21 @@
 scrape_configs:
-- job_name: cadvisor
-  scrape_interval: 5s
-  static_configs:
-  - targets:
-    - cadvisor:8080
-- job_name: 'consumer'
-  scrape_interval: 5s
-  static_configs:
-  - targets:
-    - consumer:1234
-  metrics_path: /metrics
+  - job_name: cadvisor
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+          - cadvisor:8080
+  - job_name: "consumer"
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+          - consumer:1234
+    metrics_path: /metrics
+  - job_name: "streamiz"
+    scrape_interval: 1s
+    static_configs:
+      - targets: ["streamiz-1:9099", "streamiz-2:9099", "streamiz-3:9099"]
+  - job_name: "streams"
+    scrape_interval: 1s
+    metrics_path: "/actuator/prometheus"
+    static_configs:
+      - targets: ["streams-1:9404", "streams-2:9404", "streams-3:9404"]

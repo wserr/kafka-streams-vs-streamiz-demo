@@ -28,7 +28,7 @@ public class StreamTopology {
         var weatherRecordStream =
                 builder.stream(WeatherRecordTopic, Consumed.with(Serdes.String(), weatherRecordSerde));
 
-        ValueJoiner<WeatherRecord, WeatherStationRecord, EnrichedWeatherRecord> valueJoiner = (leftValue, rightValue) -> new EnrichedWeatherRecord(leftValue.messageId(), rightValue.weatherStationId(), leftValue.value(), leftValue.timeStamp(), System.currentTimeMillis());
+        ValueJoiner<WeatherRecord, WeatherStationRecord, EnrichedWeatherRecord> valueJoiner = (leftValue, rightValue) -> new EnrichedWeatherRecord(leftValue.messageId(), rightValue.weatherStationId(), rightValue.name(), leftValue.value(), leftValue.timeStamp(), System.currentTimeMillis());
 
         weatherRecordStream
                 .join(weatherStationsTable, 

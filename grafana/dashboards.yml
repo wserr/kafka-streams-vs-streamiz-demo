@@ -28,3 +28,30 @@ providers:
     options:
       path:  /var/lib/grafana/dashboards
       foldersFromFilesStructure: true
+  - name: 'stream_application_metrics'
+    orgId: 1
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path:  /var/lib/grafana/dashboards
+      foldersFromFilesStructure: true
+  - name: 'throughput_and_latency'
+    orgId: 1
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path:  /var/lib/grafana/dashboards
+      foldersFromFilesStructure: true
+  - name: 'stream_framework_metrics'
+    orgId: 1
+    type: file
+    disableDeletion: true
+    updateIntervalSeconds: 10
+    allowUiUpdates: true
+    options:
+      path:  /var/lib/grafana/dashboards
+      foldersFromFilesStructure: true
