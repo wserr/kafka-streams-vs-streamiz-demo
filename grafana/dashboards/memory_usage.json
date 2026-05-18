@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 3,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -109,7 +109,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "container_memory_usage_bytes{container_label_com_docker_compose_project=\"streamiz-vs-streams\", container_label_com_docker_compose_service=\"streams\"}",
+          "expr": "container_memory_usage_bytes{container_label_com_docker_compose_project=\"streamiz-vs-streams\", container_label_com_docker_compose_service=~\"streams-2|streams-1|streams-3\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -209,7 +209,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "container_memory_usage_bytes{container_label_com_docker_compose_project=\"streamiz-vs-streams\", container_label_com_docker_compose_service=\"streamiz\"}",
+          "expr": "container_memory_usage_bytes{container_label_com_docker_compose_project=\"streamiz-vs-streams\", container_label_com_docker_compose_service=~\"streamiz-1|streamiz-2|streamiz-3\"}",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -337,6 +337,6 @@
   "timezone": "",
   "title": "Memory Consumption",
   "uid": "e3230fae-2fca-4b6b-8b95-4155b740a747",
-  "version": 1,
+  "version": 6,
   "weekStart": ""
 }
