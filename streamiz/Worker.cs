@@ -1,8 +1,8 @@
 using Confluent.Kafka;
 using Streamiz.Kafka.Net;
 using Streamiz.Kafka.Net.Metrics;
-using Streamiz.Kafka.Net.SerDes;
 using Streamiz.Kafka.Net.Metrics.Prometheus;
+using Streamiz.Kafka.Net.SerDes;
 
 namespace streamiz;
 
@@ -16,7 +16,8 @@ public class Worker : BackgroundService
         config.AllowAutoCreateTopics = true;
         config.AutoOffsetReset = AutoOffsetReset.Earliest;
         config.MetricsRecording = MetricsRecordingLevel.DEBUG;
-	    config.UsePrometheusReporter(9099, true);
+        config.UsePrometheusReporter(9099, true);
+        config.Guarantee = ProcessingGuarantee.EXACTLY_ONCE;
 
         var builder = new StreamBuilder();
 
@@ -39,18 +40,20 @@ public class Worker : BackgroundService
                 new EnrichedWeatherRecord(
                     weatherRecord.messageId,
                     station.weatherStationId,
-		    station.name,
+                    station.name,
                     weatherRecord.value,
                     weatherRecord.timeStamp,
                     DateTimeOffset.Now.ToUnixTimeMilliseconds()
                 )
         );
 
-	enrichedWeatherRecordStream.To<StringSerDes, JsonSerDes<EnrichedWeatherRecord>>("weather.data.enriched.streamiz");
+        enrichedWeatherRecordStream.To<StringSerDes, JsonSerDes<EnrichedWeatherRecord>>(
+            "weather.data.enriched.streamiz"
+        );
 
-	var t = builder.Build();
-	var stream = new KafkaStream(t, config);
+        var t = builder.Build();
+        var stream = new KafkaStream(t, config);
 
-	await stream.StartAsync(stoppingToken);
+        await stream.StartAsync(stoppingToken);
     }
 }
