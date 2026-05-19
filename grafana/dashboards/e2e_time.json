@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -34,6 +34,7 @@
             "mode": "continuous-GrYlRd"
           },
           "mappings": [],
+          "max": 50,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -52,8 +53,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
-        "w": 18,
+        "h": 13,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -109,6 +110,7 @@
             "mode": "continuous-GrYlRd"
           },
           "mappings": [],
+          "max": 50,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -127,100 +129,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
-        "w": 6,
-        "x": 18,
-        "y": 0
-      },
-      "id": 7,
-      "options": {
-        "displayMode": "gradient",
-        "minVizHeight": 10,
-        "minVizWidth": 0,
-        "namePlacement": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true,
-        "valueMode": "color"
-      },
-      "pluginVersion": "10.2.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus-1"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "rate(message_reception_milliseconds_count{processor_type=\"streams\"}[10s])",
-          "format": "heatmap",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "{{processor_type}}",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus-1"
-          },
-          "editorMode": "code",
-          "expr": "rate(message_reception_milliseconds_count{processor_type=\"streamiz\"}[10s])",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{processor_type}}",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Amount of messages processed over 10s",
-      "transparent": true,
-      "type": "bargauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus-1"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "continuous-GrYlRd"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 18,
+        "h": 10,
+        "w": 24,
         "x": 0,
-        "y": 12
+        "y": 13
       },
       "id": 5,
       "options": {
@@ -261,124 +173,6 @@
       "title": "Kafka Streams - E2E Time over 10s (buckets: in ms)",
       "transparent": true,
       "type": "bargauge"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus-1"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 12,
-        "w": 6,
-        "x": 18,
-        "y": 12
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "10.2.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus-1"
-          },
-          "disableTextWrap": false,
-          "editorMode": "code",
-          "exemplar": false,
-          "expr": "rate(message_reception_milliseconds_count{processor_type=\"streams\"}[10s])",
-          "format": "heatmap",
-          "fullMetaSearch": false,
-          "includeNullMetadata": true,
-          "instant": false,
-          "legendFormat": "{{processor_type}}",
-          "range": true,
-          "refId": "A",
-          "useBackend": false
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus-1"
-          },
-          "editorMode": "code",
-          "expr": "rate(message_reception_milliseconds_count{processor_type=\"streamiz\"}[10s])",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "{{processor_type}}",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Amount of messages processed over 10s",
-      "transparent": true,
-      "type": "timeseries"
     }
   ],
   "refresh": "5s",
@@ -395,6 +189,6 @@
   "timezone": "",
   "title": "E2E Time",
   "uid": "cede811f-b1db-472c-a37d-4b106b298e18",
-  "version": 4,
+  "version": 6,
   "weekStart": ""
 }
