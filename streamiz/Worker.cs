@@ -3,6 +3,7 @@ using Streamiz.Kafka.Net;
 using Streamiz.Kafka.Net.Metrics;
 using Streamiz.Kafka.Net.Metrics.Prometheus;
 using Streamiz.Kafka.Net.SerDes;
+using Streamiz.Kafka.Net.Table;
 
 namespace streamiz;
 
@@ -17,7 +18,9 @@ public class Worker : BackgroundService
         config.AutoOffsetReset = AutoOffsetReset.Earliest;
         config.MetricsRecording = MetricsRecordingLevel.DEBUG;
         config.UsePrometheusReporter(9099, true);
+        config.EnableCacheStoreByDefault(CacheSize.OfMb(10));
         config.Guarantee = ProcessingGuarantee.EXACTLY_ONCE;
+        config.PollMs = 5;
 
         var builder = new StreamBuilder();
 
