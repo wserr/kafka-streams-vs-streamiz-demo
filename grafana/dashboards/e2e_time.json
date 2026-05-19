@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -34,7 +34,7 @@
             "mode": "continuous-GrYlRd"
           },
           "mappings": [],
-          "max": 50,
+          "max": 500,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -110,7 +110,7 @@
             "mode": "continuous-GrYlRd"
           },
           "mappings": [],
-          "max": 50,
+          "max": 500,
           "thresholds": {
             "mode": "absolute",
             "steps": [
